@@ -50,11 +50,11 @@ function startListening() {
         const transcript = event.results[0][0].transcript;
         document.getElementById("userMessage").value = transcript;
         sendMessage();
-    }
+    };
 
     recognition.onerror = function(event) {
         console.error("Speech recognition error: ", event.error);
-    }
+    };
 }
 
 // Ensure the Send button triggers sendMessage()
