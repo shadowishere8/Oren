@@ -17,6 +17,12 @@ function sendMessage() {
     const userMessage = document.getElementById("userMessage").value;
     const userInputElement = document.getElementById("user-input");
     
+    // Check if the user input is empty
+    if (userMessage.trim() === "") {
+        alert("Please enter a message.");
+        return;
+    }
+
     // Display user's message
     userInputElement.innerHTML = "You: " + userMessage;
     
@@ -50,3 +56,6 @@ function startListening() {
         console.error("Speech recognition error: ", event.error);
     }
 }
+
+// Ensure the Send button triggers sendMessage()
+document.getElementById("sendBtn").addEventListener("click", sendMessage);
