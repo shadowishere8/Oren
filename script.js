@@ -1,61 +1,26 @@
-// Text-to-Speech functionality
-function speakText(text) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US'; // Set language
-    window.speechSynthesis.speak(utterance);
+// Initialize Speech Recognition API
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.continuous = true;  // Keeps listening until stopped
+recognition.interimResults = true; // Shows results as they're being spoken
+recognition.lang = 'en-US'; // Language to recognize
+
+// Initialize Speech Synthesis API
+const synth = window.speechSynthesis;
+
+// Select DOM elements
+const messagesDiv = document.getElementById("messages");
+const startButton = document.getElementById("start-listening");
+const stopButton = document.getElementById("stop-listening");
+
+let isListening = false;
+
+// Function to add message to the chat
+function addMessage(text, from = 'bot') {
+    const div = document.createElement('div');
+    div.textContent = text;
+    div.classList.add(from === 'user' ? 'user-message' : 'bot-message');
+    messagesDiv.appendChild(div);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight; // Auto scroll to the bottom
 }
 
-// Function to display the bot's response and also speak it
-function botResponse(responseText) {
-    const botResponseElement = document.getElementById("bot-response");
-    botResponseElement.innerHTML = "Bot: " + responseText;
-    speakText(responseText); // Speak out the bot's response
-}
-
-// Handle user input and AI response
-function sendMessage() {
-    const userMessage = document.getElementById("userMessage").value;
-    const userInputElement = document.getElementById("user-input");
-    
-    // Check if the user input is empty
-    if (userMessage.trim() === "") {
-        alert("Please enter a message.");
-        return;
-    }
-
-    // Display user's message
-    userInputElement.innerHTML = "You: " + userMessage;
-    
-    // Sample AI response logic (can be improved with real AI)
-    let response = "";
-    if (userMessage.toLowerCase().includes("hello")) {
-        response = "Hello! How can I assist you today?";
-    } else if (userMessage.toLowerCase().includes("how are you")) {
-        response = "I'm doing well, thank you for asking!";
-    } else {
-        response = "I'm not sure how to respond to that.";
-    }
-
-    botResponse(response);
-    document.getElementById("userMessage").value = ""; // Clear the input box
-}
-
-// Speech recognition functionality (to listen to user's voice input)
-function startListening() {
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = 'en-US';
-    recognition.start();
-
-    recognition.onresult = function(event) {
-        const transcript = event.results[0][0].transcript;
-        document.getElementById("userMessage").value = transcript;
-        sendMessage();
-    };
-
-    recognition.onerror = function(event) {
-        console.error("Speech recognition error: ", event.error);
-    };
-}
-
-// Ensure the Send button triggers sendMessage()
-document.getElementById("sendBtn").addEventListener("click", sendMessage);
+// Function to sta
